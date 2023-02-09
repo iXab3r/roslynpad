@@ -82,7 +82,13 @@ namespace RoslynPad.Editor
             RaiseEvent(e);
         }
 
-        public DocumentId Initialize(IRoslynHost roslynHost, IClassificationHighlightColors highlightColors, string workingDirectory, string documentText, SourceCodeKind sourceCodeKind)
+        public DocumentId Initialize(
+            IRoslynHost roslynHost, 
+            IClassificationHighlightColors highlightColors, 
+            string workingDirectory, 
+            string documentText, 
+            SourceCodeKind sourceCodeKind,
+            string scriptClassName = default)
         {
             _roslynHost = roslynHost ?? throw new ArgumentNullException(nameof(roslynHost));
             _classificationHighlightColors = highlightColors ?? throw new ArgumentNullException(nameof(highlightColors));
@@ -97,9 +103,8 @@ namespace RoslynPad.Editor
             var creatingDocumentArgs = new CreatingDocumentEventArgs(avalonEditTextContainer, ProcessDiagnostics);
             OnCreatingDocument(creatingDocumentArgs);
 
-            _documentId = creatingDocumentArgs.DocumentId ??
-                roslynHost.AddDocument(new DocumentCreationArgs(avalonEditTextContainer, workingDirectory, sourceCodeKind,
-                    args => ProcessDiagnostics(args), text => avalonEditTextContainer.UpdateText(text)));
+            _documentId = creatingDocumentArgs.DocumentId ?? 
+                          roslynHost.AddDocument(new DocumentCreationArgs(avalonEditTextContainer, workingDirectory, sourceCodeKind, ProcessDiagnostics, text => avalonEditTextContainer.UpdateText(text), scriptClassName));
 
             AppendText(documentText);
             Document.UndoStack.ClearAll();

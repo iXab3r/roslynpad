@@ -14,6 +14,8 @@ namespace RoslynPad.Roslyn
 
         void CloseDocument(DocumentId documentId);
 
+        void UpdateDocument(Document document);
+
         MetadataReference CreateMetadataReference(string location);
     }
 }

@@ -199,8 +199,8 @@ namespace RoslynPad.Roslyn
         private DocumentId AddDocument(RoslynWorkspace workspace, DocumentCreationArgs args, Document? previousDocument = null)
         {
             var solution = workspace.CurrentSolution.AddAnalyzerReferences(GetSolutionAnalyzerReferences());
-            var project = CreateProject(solution, args,
-                CreateCompilationOptions(args, previousDocument == null), previousDocument?.Project);
+            var compilationOptions = CreateCompilationOptions(args, previousDocument == null);
+            var project = CreateProject(solution, args, compilationOptions, previousDocument?.Project);
             var document = CreateDocument(project, args);
             var documentId = document.Id;
 
@@ -262,13 +262,28 @@ namespace RoslynPad.Roslyn
         protected virtual Document CreateDocument(Project project, DocumentCreationArgs args)
         {
             var id = DocumentId.CreateNewId(project.Id);
-            var solution = project.Solution.AddDocument(id, args.Name ?? project.Name, args.SourceTextContainer.CurrentText);
+            var solution = project.Solution.AddDocument(id, args.ScriptClassName ?? project.Name, args.SourceTextContainer.CurrentText);
             return solution.GetDocument(id)!;
+        }
+
+        protected virtual ProjectInfo CreateProjectInfo(ProjectId id, string name, CompilationOptions compilationOptions, ParseOptions parseOptions, bool isSubmission, Project? previousProject = null)
+        {
+            return ProjectInfo.Create(
+                id,
+                VersionStamp.Create(),
+                name,
+                name,
+                LanguageNames.CSharp,
+                isSubmission: isSubmission,
+                parseOptions: parseOptions,
+                compilationOptions: compilationOptions,
+                metadataReferences: previousProject != null ? ImmutableArray<MetadataReference>.Empty : DefaultReferences,
+                projectReferences: previousProject != null ? new[] {new ProjectReference(previousProject.Id)} : null);
         }
 
         protected virtual Project CreateProject(Solution solution, DocumentCreationArgs args, CompilationOptions compilationOptions, Project? previousProject = null)
         {
-            var name = args.Name ?? "New";
+            var name = args.ScriptClassName ?? "New";
             var id = ProjectId.CreateNewId(name);
 
             var parseOptions = ParseOptions.WithKind(args.SourceCodeKind);
@@ -279,17 +294,9 @@ namespace RoslynPad.Roslyn
                 compilationOptions = compilationOptions.WithScriptClassName(name);
             }
 
-            solution = solution.AddProject(ProjectInfo.Create(
-                id,
-                VersionStamp.Create(),
-                name,
-                name,
-                LanguageNames.CSharp,
-                isSubmission: isScript,
-                parseOptions: parseOptions,
-                compilationOptions: compilationOptions,
-                metadataReferences: previousProject != null ? ImmutableArray<MetadataReference>.Empty : DefaultReferences,
-                projectReferences: previousProject != null ? new[] { new ProjectReference(previousProject.Id) } : null));
+            var projectInfo = CreateProjectInfo(id, name, compilationOptions, parseOptions, isScript, previousProject);
+
+            solution = solution.AddProject(projectInfo);
 
             var project = solution.GetProject(id)!;
 

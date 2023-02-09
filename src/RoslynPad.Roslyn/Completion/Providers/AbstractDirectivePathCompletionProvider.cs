@@ -52,7 +52,7 @@ namespace RoslynPad.Roslyn.Completion.Providers
 
                 await ProvideCompletionsAsync(context, pathThroughLastSlash).ConfigureAwait(false);
             }
-            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e))
+            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e, CancellationToken.None))
             {
                 // nop
             }

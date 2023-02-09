@@ -7,14 +7,14 @@ namespace RoslynPad.Roslyn
 {
     public class DocumentCreationArgs
     {
-        public DocumentCreationArgs(SourceTextContainer sourceTextContainer, string workingDirectory, SourceCodeKind sourceCodeKind, Action<DiagnosticsUpdatedArgs>? onDiagnosticsUpdated = null, Action<SourceText>? onTextUpdated = null, string? name = null)
+        public DocumentCreationArgs(SourceTextContainer sourceTextContainer, string workingDirectory, SourceCodeKind sourceCodeKind, Action<DiagnosticsUpdatedArgs>? onDiagnosticsUpdated = null, Action<SourceText>? onTextUpdated = null, string? scriptClassName = null)
         {
             SourceTextContainer = sourceTextContainer;
             WorkingDirectory = workingDirectory;
             SourceCodeKind = sourceCodeKind;
             OnDiagnosticsUpdated = onDiagnosticsUpdated;
             OnTextUpdated = onTextUpdated;
-            Name = name;
+            ScriptClassName = scriptClassName;
         }
 
         public SourceTextContainer SourceTextContainer { get; }
@@ -22,6 +22,6 @@ namespace RoslynPad.Roslyn
         public SourceCodeKind SourceCodeKind { get; }
         public Action<DiagnosticsUpdatedArgs>? OnDiagnosticsUpdated { get; }
         public Action<SourceText>? OnTextUpdated { get; }
-        public string? Name { get; }
+        public string? ScriptClassName { get; }
     }
 }

@@ -48,7 +48,7 @@ namespace RoslynPad.Roslyn
             RoslynHostReferences? references = null,
             ImmutableArray<string>? disabledDiagnostics = null)
         {
-            if (references == null) references = RoslynHostReferences.Empty;
+            references ??= RoslynHostReferences.Empty;
 
             _workspaces = new ConcurrentDictionary<DocumentId, RoslynWorkspace>();
             _diagnosticsUpdatedNotifiers = new ConcurrentDictionary<DocumentId, Action<DiagnosticsUpdatedArgs>>();
@@ -115,7 +115,7 @@ namespace RoslynPad.Roslyn
 
         public TService GetService<TService>() => _compositionContext.GetExport<TService>();
 
-        protected internal virtual void AddMetadataReference(ProjectId projectId, AssemblyIdentity assemblyIdentity)
+        public virtual void AddMetadataReference(ProjectId projectId, AssemblyIdentity assemblyIdentity)
         {
             // TODO
         }

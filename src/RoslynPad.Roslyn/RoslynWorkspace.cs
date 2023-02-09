@@ -10,9 +10,9 @@ namespace RoslynPad.Roslyn
     public class RoslynWorkspace : Workspace
     {
         public DocumentId? OpenDocumentId { get; private set; }
-        public RoslynHost? RoslynHost { get; }
+        public IRoslynHost? RoslynHost { get; }
 
-        public RoslynWorkspace(HostServices hostServices, string workspaceKind = WorkspaceKind.Host, RoslynHost? roslynHost = null)
+        public RoslynWorkspace(HostServices hostServices, string workspaceKind = WorkspaceKind.Host, IRoslynHost? roslynHost = null)
             : base(hostServices, workspaceKind)
         {
             DiagnosticProvider.Enable(this, DiagnosticProvider.Options.Semantic);

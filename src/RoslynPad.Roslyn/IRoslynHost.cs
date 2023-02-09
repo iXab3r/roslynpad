@@ -8,6 +8,8 @@ namespace RoslynPad.Roslyn
 
         TService GetService<TService>();
 
+        void AddMetadataReference(ProjectId projectId, AssemblyIdentity assemblyIdentity);
+
         DocumentId AddDocument(DocumentCreationArgs args);
 
         Document? GetDocument(DocumentId documentId);

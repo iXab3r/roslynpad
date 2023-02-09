@@ -39,7 +39,7 @@ namespace RoslynPad.Roslyn
 
             var locations =
                 assemblyReferences!.WhereNotNull().Select(c => c.Location).Concat(
-                assemblyPathReferences!.WhereNotNull());
+                assemblyPathReferences!.WhereNotNull()).Where(x => !string.IsNullOrEmpty(x));
 
             foreach (var location in locations)
             {

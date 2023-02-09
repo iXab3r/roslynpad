@@ -18,6 +18,7 @@ namespace RoslynPad.Editor
     {
         public HighlightingColor DefaultBrush { get; protected set; } = new HighlightingColor { Foreground = new SimpleHighlightingBrush(Colors.Black) };
 
+        public HighlightingColor IdentifierBrush { get; protected set; } = new HighlightingColor { Foreground = new SimpleHighlightingBrush(Colors.Teal) };
         public HighlightingColor TypeBrush { get; protected set; } = new HighlightingColor { Foreground = new SimpleHighlightingBrush(Colors.Teal) };
         public HighlightingColor MethodBrush { get; protected set; } = new HighlightingColor { Foreground = new SimpleHighlightingBrush(Colors.Olive) };
         public HighlightingColor CommentBrush { get; protected set; } = new HighlightingColor { Foreground = new SimpleHighlightingBrush(Colors.Green) };
@@ -38,12 +39,15 @@ namespace RoslynPad.Editor
             {
                 [ClassificationTypeNames.ClassName] = AsFrozen(TypeBrush),
                 [ClassificationTypeNames.StructName] = AsFrozen(TypeBrush),
+                [ClassificationTypeNames.Identifier] = AsFrozen(IdentifierBrush),
+                [ClassificationTypeNames.PropertyName] = AsFrozen(IdentifierBrush),
                 [ClassificationTypeNames.InterfaceName] = AsFrozen(TypeBrush),
                 [ClassificationTypeNames.DelegateName] = AsFrozen(TypeBrush),
                 [ClassificationTypeNames.EnumName] = AsFrozen(TypeBrush),
                 [ClassificationTypeNames.ModuleName] = AsFrozen(TypeBrush),
                 [ClassificationTypeNames.TypeParameterName] = AsFrozen(TypeBrush),
                 [ClassificationTypeNames.MethodName] = AsFrozen(MethodBrush),
+                [ClassificationTypeNames.ExtensionMethodName] = AsFrozen(MethodBrush),
                 [ClassificationTypeNames.Comment] = AsFrozen(CommentBrush),
                 [ClassificationTypeNames.StaticSymbol] = AsFrozen(StaticSymbolBrush),
                 [ClassificationTypeNames.XmlDocCommentAttributeName] = AsFrozen(XmlCommentBrush),

@@ -46,7 +46,7 @@ namespace RoslynPad.Editor
         private const int DelayMoveMilliseconds = 500;
 
         private readonly ObservableCollection<IContextActionProvider> _providers;
-        private readonly CodeTextEditor _editor;
+        private readonly CodeTextEditorBase _editor;
         private readonly TextMarkerService _textMarkerService;
         private readonly MarkerMargin _bulbMargin;
         private readonly DispatcherTimer _delayMoveTimer;
@@ -56,7 +56,7 @@ namespace RoslynPad.Editor
         private List<object>? _actions;
         private ImageSource? _iconImage;
 
-        public ContextActionsRenderer(CodeTextEditor editor, TextMarkerService textMarkerService)
+        public ContextActionsRenderer(CodeTextEditorBase editor, TextMarkerService textMarkerService)
         {
             _editor = editor ?? throw new ArgumentNullException(nameof(editor));
             _textMarkerService = textMarkerService;

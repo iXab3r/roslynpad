@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ClassificationHighlightColors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeSnippet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeTextEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeTextEditorBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CompletionResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextActionsRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentUtilities.cs" />

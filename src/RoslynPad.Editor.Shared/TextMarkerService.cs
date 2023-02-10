@@ -48,7 +48,7 @@ namespace RoslynPad.Editor
 
         #region Constructors
 
-        public TextMarkerService(CodeTextEditor editor)
+        public TextMarkerService(CodeTextEditorBase editor)
         {
             if (editor == null) throw new ArgumentNullException(nameof(editor));
             _document = editor.Document;

@@ -37,7 +37,8 @@ using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace RoslynPad.Editor
 {
-    public partial class CodeTextEditor : TextEditor
+    
+    public partial class CodeTextEditor : CodeTextEditorBase
     {
         private CustomCompletionWindow? _completionWindow;
         private OverloadInsightWindow? _insightWindow;
@@ -136,16 +137,6 @@ namespace RoslynPad.Editor
             SignatureHelp
         }
 
-        public static readonly RoutedEvent ToolTipRequestEvent = CommonEvent.Register<CodeTextEditor, ToolTipRequestEventArgs>(
-            nameof(ToolTipRequest), RoutingStrategy.Bubble);
-
-        public Func<ToolTipRequestEventArgs, Task>? AsyncToolTipRequest { get; set; }
-
-        public event EventHandler<ToolTipRequestEventArgs> ToolTipRequest
-        {
-            add => AddHandler(ToolTipRequestEvent, value);
-            remove => RemoveHandler(ToolTipRequestEvent, value);
-        }
 
         private void OnVisualLinesChanged(object? sender, EventArgs e)
         {

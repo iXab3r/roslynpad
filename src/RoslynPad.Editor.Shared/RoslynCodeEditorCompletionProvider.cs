@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
@@ -36,14 +37,76 @@ public sealed class RoslynCodeEditorCompletionProvider : ICodeEditorCompletionPr
 
         Task.Run(() =>
         {
+<<<<<<< Updated upstream
+=======
+            _documentId = documentId;
+            _roslynHost = roslynHost;
+            _snippetService = (SnippetInfoService)_roslynHost.GetService<ISnippetInfoService>();
+        }
+
+        // initialize the providers once in the app domain so typing would start faster
+        internal void Warmup()
+        {
+            if (_initialized) return;
+
+            _initialized = true;
+
+            Task.Run(() =>
+            {
+                var document = _roslynHost.GetDocument(_documentId);
+                if (document == null)
+                {
+                    return;
+                }
+
+                var completionService = CompletionService.GetService(document);
+                completionService.GetCompletionsAsync(document, 0);
+
+                var signatureHelpProvider = _roslynHost.GetService<ISignatureHelpProvider>();
+                signatureHelpProvider.GetItemsAsync(document, 0,
+                    new SignatureHelpTriggerInfo(SignatureHelpTriggerReason.InvokeSignatureHelpCommand));
+            });
+        }
+
+        public async Task<CompletionResult> GetCompletionData(int position, char? triggerChar, bool useSignatureHelp, CancellationToken cancellationToken)
+        {
+            IList<ICompletionDataEx>? completionData = null;
+            IOverloadProviderEx? overloadProvider = null;
+            var useHardSelection = true;
+
+>>>>>>> Stashed changes
             var document = _roslynHost.GetDocument(_documentId);
             if (document == null)
             {
                 return;
             }
 
+<<<<<<< Updated upstream
             var completionService = CompletionService.GetService(document);
             completionService?.GetCompletionsAsync(document, 0);
+=======
+            if (useSignatureHelp || triggerChar != null)
+            {
+                var signatureHelpProvider = _roslynHost.GetService<ISignatureHelpProvider>();
+                var isSignatureHelp = useSignatureHelp || signatureHelpProvider.IsTriggerCharacter(triggerChar.GetValueOrDefault());
+                if (isSignatureHelp)
+                {
+                    var signatureHelp = await signatureHelpProvider.GetItemsAsync(
+                        document,
+                        position,
+                        new SignatureHelpTriggerInfo(
+                            useSignatureHelp
+                                ? SignatureHelpTriggerReason.InvokeSignatureHelpCommand
+                                : SignatureHelpTriggerReason.TypeCharCommand, triggerChar), 
+                        cancellationToken)
+                        .ConfigureAwait(false);
+                    if (signatureHelp != null)
+                    {
+                        overloadProvider = new RoslynOverloadProvider(signatureHelp);
+                    }
+                }
+            }
+>>>>>>> Stashed changes
 
             var signatureHelpProvider = _roslynHost.GetService<ISignatureHelpProvider>();
             signatureHelpProvider.GetItemsAsync(document, 0,
@@ -72,12 +135,17 @@ public sealed class RoslynCodeEditorCompletionProvider : ICodeEditorCompletionPr
                 var signatureHelp = await signatureHelpProvider.GetItemsAsync(
                     document,
                     position,
+<<<<<<< Updated upstream
                     new SignatureHelpTriggerInfo(
                         useSignatureHelp
                             ? SignatureHelpTriggerReason.InvokeSignatureHelpCommand
                             : SignatureHelpTriggerReason.TypeCharCommand, triggerChar))
                     .ConfigureAwait(false);
                 if (signatureHelp != null)
+=======
+                    completionTrigger, cancellationToken: cancellationToken).ConfigureAwait(false);
+                if (data != null && data.Items.Any())
+>>>>>>> Stashed changes
                 {
                     overloadProvider = new RoslynOverloadProvider(signatureHelp);
                 }

@@ -27,6 +27,7 @@ namespace RoslynPad.Editor;
 
 internal sealed class RoslynCompletionData : ICompletionDataEx, INotifyPropertyChanged
 {
+<<<<<<< Updated upstream
     private readonly Document _document;
     private readonly CompletionItem _item;
     private readonly char? _completionChar;
@@ -36,6 +37,9 @@ internal sealed class RoslynCompletionData : ICompletionDataEx, INotifyPropertyC
     private Decorator? _description;
 
     public RoslynCompletionData(Document document, CompletionItem item, char? completionChar, SnippetManager snippetManager)
+=======
+    internal sealed record RoslynCompletionData : ICompletionDataEx
+>>>>>>> Stashed changes
     {
         _document = document;
         _item = item;
@@ -76,8 +80,100 @@ internal sealed class RoslynCompletionData : ICompletionDataEx, INotifyPropertyC
 
         if (changes.NewPosition != null)
         {
+<<<<<<< Updated upstream
             textArea.Caret.Offset = changes.NewPosition.Value;
+=======
+            char? completionChar = null;
+            var txea = e as CommonTextEventArgs;
+            if (txea != null && txea.Text?.Length > 0)
+                completionChar = txea.Text[0];
+            else if (e is KeyEventArgs kea && kea.Key == Key.Tab)
+                completionChar = '\t';
+
+            if (completionChar == '\t')
+            {
+                var snippet = _snippetManager.FindSnippet(_item.DisplayText);
+                if (snippet != null)
+                {
+                    var editorSnippet = snippet.CreateAvalonEditSnippet();
+                    using (textArea.Document.RunUpdate())
+                    {
+                        textArea.Document.Remove(completionSegment.Offset, completionSegment.Length);
+                        editorSnippet.Insert(textArea);
+                    }
+                    if (txea != null)
+                    {
+                        txea.Handled = true;
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
         }
+
+#if AVALONIA
+        public CommonImage? Image => null;
+        public IImage? Drawing => _glyph.ToImageSource();
+#else
+        public CommonImage? Image => _glyph.ToImageSource();
+#endif
+
+        public string Text { get; }
+
+        public object Content { get; }
+
+        public object Description
+        {
+            get
+            {
+                if (_description == null)
+                {
+                    _description = new Decorator();
+#if AVALONIA
+                    _description.Initialized += (o, e) => { var task = _descriptionTask.Value; };
+#else
+                    _description.Loaded += (o, e) => { var task = _descriptionTask.Value; };
+#endif
+                }
+
+                return _description;
+            }
+        }
+
+        private async Task RetrieveDescription()
+        {
+            if (_description != null)
+            {
+                var description = await Task.Run(() => CompletionService.GetService(_document).GetDescriptionAsync(_document, _item)).ConfigureAwait(true);
+                _description.Child = description.TaggedParts.ToTextBlock();
+            }
+        }
+
+        public double Priority { get; }
+
+        public bool IsSelected => _item.Rules.MatchPriority == MatchPriority.Preselect;
+
+        public string SortText => _item.SortText;
+
+        public bool Equals(RoslynCompletionData? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Text == other.Text;
+>>>>>>> Stashed changes
+        }
+
+        public override int GetHashCode() => Text.GetHashCode();
     }
 
     private bool CompleteSnippet(TextArea textArea, ISegment completionSegment, EventArgs e)

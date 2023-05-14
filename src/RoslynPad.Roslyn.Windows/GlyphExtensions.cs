@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 using RoslynPad.Roslyn.Completion;
 using RoslynPad.Roslyn.Resources;
@@ -12,14 +14,14 @@ namespace RoslynPad.Roslyn
 
         private class GlyphService
         {
-            private readonly Glyphs _glyphs;
-
+            [ThreadStatic] private static Glyphs? _glyphs;
+            private static Glyphs Glyphs => _glyphs ??= new Glyphs();
+            
             public GlyphService()
             {
-                _glyphs = new Glyphs();
             }
 
-            public ImageSource? GetGlyphImage(Glyph glyph) => _glyphs[glyph] as ImageSource;
+            public ImageSource? GetGlyphImage(Glyph glyph) => Glyphs[glyph] as ImageSource;
         }
     }
 }
